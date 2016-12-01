@@ -2,8 +2,12 @@ import numpy as np
 import pandas as pd
 from ranking_metrics import ndcg_at_k, mean_average_precision, average_precision
 from factorizationAlgos import *
+import pickle 
 
 def runSingleExperiment(trainMat, testTupl):
+	item_topic_dist = pickle.load(open('item_topic_dist_20.p','rb'))
+
+	trainMat = np.dot(trainMat, item_topic_dist.T)
 	
 	idealList = getRankedDictForUsers(testTupl)
 	print "Done Retrieving Ideal List ...\n"
@@ -23,9 +27,11 @@ def runSingleExperiment(trainMat, testTupl):
 
 	print "Average NDCG for Ideal: "+str(float(sum(ideal))/len(idealList))
 
-
 	retrievedMat = retrieve(trainMat)
 	print "Done Retrieving Matrix ...\n"
+
+	retrievedMat = np.dot(retrievedMat, item_topic_dist)
+	
 	retrievedList = getRankedDictForUsers(testTupl, True, retrievedMat)
 	print "Done Retrieving Retrieval List ...\n"
 

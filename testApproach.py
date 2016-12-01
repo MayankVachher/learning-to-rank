@@ -11,8 +11,6 @@ def main():
 		results_ndcg = []
 		results_map = []
 
-		item_topic = pickle.load(open('item_topic_dist_20.p','rb'))
-
 		for x in range(1,6):
 			trainTupl = pickle.load(open('folds/fold'+str(x)+'.train', 'r'))
 			testTupl = pickle.load(open('folds/fold'+str(x)+'.test', 'r'))
@@ -26,11 +24,6 @@ def main():
 			for tupl in trainTupl:
 				uid, mid, r = tupl
 				trainMat[uid, mid] = r
-
-			# multiplying trainMat with inve of item_topic_dist
-
-			trainMat = np.dot(trainMat, item_topic.T)
-			print trainMat
 
 			vals = runSingleExperiment(trainMat, testTupl)
 

@@ -1,0 +1,84 @@
+import numpy as np 
+import pandas as pd
+from ranking_metrics import ndcg_at_k, mean_average_precision, average_precision
+from factorizationAlgos import *
+
+def runSingleExperiment(trainMat, testTupl):
+	
+	idealList = getRankedDictForUsers(testTupl)
+	print "Done Retrieving Ideal List ...\n"
+
+	ideal = []
+	userBias = {}
+
+	for x in idealList:
+		currentUser = idealList[x]
+		ideal.append(ndcg_at_k([temp[1] for temp in currentUser], len(currentUser)))
+
+		train_ = trainMat[x,]
+		fin = train_[train_ != 0]
+
+		uB = sum(fin)/(len(fin))
+		userBias[x] = uB
+
+	print "Average NDCG for Ideal: "+str(float(sum(ideal))/len(idealList))
+
+
+	retrievedMat = retrieve(trainMat)
+	print "Done Retrieving Matrix ...\n"
+	retrievedList = getRankedDictForUsers(testTupl, True, retrievedMat)
+	print "Done Retrieving Retrieval List ...\n"
+
+	retrieved_ndcg4 = []
+	retrieved_map4 = []
+	for x in retrievedList:
+		currentUser = retrievedList[x]
+		retrieved_ndcg4.append(ndcg_at_k([temp[1] for temp in currentUser], 4))
+
+		prec_pre = [0,0,0,0]
+		for j in range(4):
+			if currentUser[j][1] >= userBias[x]:
+				prec_pre[j] = 1
+
+		retrieved_map4.append(mean_average_precision([prec_pre]))
+
+	avg_ndcgat4 = float(sum(retrieved_ndcg4))/len(retrievedList)
+	avg_map4 = float(sum(retrieved_map4))/len(retrievedList)
+
+	print "Average NDCG@4 for Retrieved: "+str(avg_ndcgat4)
+	print "Average MAP@4 for Retrieved: "+str(avg_map4)
+
+	return avg_ndcgat4, avg_map4
+
+def retrieve(trainMat):
+	# return softimpute(trainMat)
+	# return basicMF(trainMat)
+	return basicMF2(trainMat)
+
+def getRankedDictForUsers(testTupl, haveRet=False, retMatrix=None):
+	
+	user_dict = {}
+
+	for tupl in testTupl:
+		uid = tupl[0]
+		mid = tupl[1]
+		r = tupl[2]
+		r2 = None
+
+		if haveRet != False:
+			r2 = retMatrix[uid, mid]
+
+		if uid not in user_dict:
+			user_dict[uid] = [[mid, r, r2]]
+		else:
+			user_dict[uid].append([mid, r, r2])
+
+	final_dict = {}
+
+	for user in user_dict:
+		if haveRet == False:
+			user_dict[user] = sorted(user_dict[user], key=lambda x: x[1], reverse=True)
+		else:
+			user_dict[user] = sorted(user_dict[user], key=lambda x: x[2], reverse=True)
+
+	return user_dict

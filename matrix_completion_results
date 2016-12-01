@@ -1,0 +1,13 @@
+max_iters=20, max_rank=2, min_value=1, max_value=5
+Fold 1 NDCG: 0.8699
+Fold 1 MAP: 0.8365
+Fold 2 NDCG: 0.8670
+Fold 2 MAP: 0.8136
+Fold 3 NDCG: 0.8744
+Fold 3 MAP: 0.8398
+Fold 4 NDCG: 0.8759
+Fold 4 MAP: 0.8262
+Fold 5 NDCG: 0.8737
+Fold 5 MAP: 0.8176
+Avg. NDCG@4 across Folds: 0.8722
+Avg. MAP@4 across Folds: 0.8268

@@ -4,7 +4,7 @@ import pickle
 
 def main():
 
-	with open("matrix_factorization_sgd_results", "w") as resFile:
+	with open("matrix_factorization_sgd_results_100", "w") as resFile:
 
 		resFile.write("K=5, steps=50, alpha=0.0002, beta=0.02\n")
 

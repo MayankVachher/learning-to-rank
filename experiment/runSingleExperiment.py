@@ -5,7 +5,7 @@ from factorizationAlgos import *
 import pickle 
 
 def runSingleExperiment(trainMat, testTupl):
-	item_topic_dist = pickle.load(open('item_topic_dist_20.p','rb'))
+	item_topic_dist = pickle.load(open('item_topic_dist_100.p','rb'))
 
 	trainMat = np.dot(trainMat, item_topic_dist.T)
 	

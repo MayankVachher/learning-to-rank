@@ -1,0 +1,13 @@
+K=5, steps=50, alpha=0.0002, beta=0.02
+Fold 1 NDCG: 0.8722
+Fold 1 MAP: 0.8396
+Fold 2 NDCG: 0.8768
+Fold 2 MAP: 0.8306
+Fold 3 NDCG: 0.8825
+Fold 3 MAP: 0.8441
+Fold 4 NDCG: 0.8807
+Fold 4 MAP: 0.8381
+Fold 5 NDCG: 0.8803
+Fold 5 MAP: 0.8338
+Avg. NDCG@4 across Folds: 0.8785
+Avg. MAP@4 across Folds: 0.8372

@@ -4,7 +4,7 @@ import pickle
 
 def main():
 
-	with open("matrix_factorization_sgd_results_100", "w") as resFile:
+	with open("matrix_factorization_sgd_results_bhavna", "w") as resFile:
 
 		resFile.write("K=5, steps=50, alpha=0.0002, beta=0.02\n")
 
@@ -20,7 +20,7 @@ def main():
 			n_items = 1682
 
 			trainMat = np.zeros((n_users, n_items))
-			
+
 			for tupl in trainTupl:
 				uid, mid, r = tupl
 				trainMat[uid, mid] = r

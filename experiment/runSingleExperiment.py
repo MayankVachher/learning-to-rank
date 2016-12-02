@@ -3,12 +3,20 @@ import pandas as pd
 from ranking_metrics import ndcg_at_k, mean_average_precision, average_precision
 from factorizationAlgos import *
 import pickle 
+from sklearn.metrics import mean_absolute_error
+
+n_users = 943
+n_items = 1682
 
 def runSingleExperiment(trainMat, testTupl):
 	item_topic_dist = pickle.load(open('item_topic_dist_100.p','rb'))
-
 	trainMat = np.dot(trainMat, item_topic_dist.T)
 	
+	testMat = np.zeros((n_users, n_items))
+	for tupl in testTupl:
+				uid, mid, r = tupl
+				testMat[uid, mid] = r
+
 	idealList = getRankedDictForUsers(testTupl)
 	print "Done Retrieving Ideal List ...\n"
 
@@ -50,16 +58,19 @@ def runSingleExperiment(trainMat, testTupl):
 
 	avg_ndcgat4 = float(sum(retrieved_ndcg4))/len(retrievedList)
 	avg_map4 = float(sum(retrieved_map4))/len(retrievedList)
+	mae = calcmae(testMat,retrievedMat)
+	nmae = (mae/4.0)
 
 	print "Average NDCG@4 for Retrieved: "+str(avg_ndcgat4)
 	print "Average MAP@4 for Retrieved: "+str(avg_map4)
+	print "NMAE for Retrieved: " +str(nmae)
 
 	return avg_ndcgat4, avg_map4
 
 def retrieve(trainMat):
-	# return softimpute(trainMat)
+	return softimpute(trainMat)
 	# return basicMF(trainMat)
-	return basicMF2(trainMat)
+	# return basicMF2(trainMat)
 
 def getRankedDictForUsers(testTupl, haveRet=False, retMatrix=None):
 	
@@ -88,3 +99,9 @@ def getRankedDictForUsers(testTupl, haveRet=False, retMatrix=None):
 			user_dict[user] = sorted(user_dict[user], key=lambda x: x[2], reverse=True)
 
 	return user_dict
+
+def calcmae(testmx, predictedmx):
+    predictedmx = predictedmx[testmx.nonzero()].flatten()
+    testmx = testmx[testmx.nonzero()].flatten()
+
+    return mean_absolute_error(testmx, predictedmx)
